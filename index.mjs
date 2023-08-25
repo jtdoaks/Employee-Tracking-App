@@ -1,11 +1,4 @@
-import mysql from 'mysql2';
 import mysql from 'mysql2/promise';
-
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'test'
-}); 
 
 
 import inquirer from 'inquirer';
@@ -20,3 +13,8 @@ const answers = await inquirer
     ])
 console.log(answers)
 
+const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'company_db'});
+
+  const [rows] = await connection.execute('SELECT * FROM employee');
+ 
+  console.table(rows)
