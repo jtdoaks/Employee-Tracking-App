@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise'; 
+import mysql from 'mysql2/promise';
 
 const connection = await mysql.createConnection({ host: 'localhost', user: 'root', database: 'company_db' });
 
@@ -16,42 +16,45 @@ async function menuOptions() {
             }
         ])
     console.log(answers)
-    
-    
+
+
     if (answers.decision === 'View All Employees') {
-        
+
         viewEmployees()
     }
     else if (answers.decision === 'Add Employee') {
-        // POST user input into that table.
-        // variable? 
-        // prompt for name? and role and manager
+        
     }
     else if (answers.decision === 'View All Roles') {
-        
-        const [rows] = await connection.execute('SELECT * FROM role');
-        console.table(rows)
+        viewRoles()
     }
     else if (answers.decision === 'Add Role') {
-        // POST user input into that table.
-        // variable? 
-        // prompt for department and salary
+        addRole()
     }
     else if (answers.decision === 'View All Departments') {
-        
-        const [rows] = await connection.execute('SELECT * FROM department');
-        console.table(rows)
+
+        viewDepartments()
     }
     else if (answers.decision === 'Add Department') {
         addDepartment();
     }
-    
+
 }
 
 async function viewEmployees() {
     const [rows] = await connection.execute('SELECT * FROM employee');
-        console.table(rows)
-        menuOptions();
+    console.table(rows)
+    menuOptions();
+}
+async function viewRoles() {
+    const [rows] = await connection.execute('SELECT * FROM role');
+    console.table(rows)
+    menuOptions();
+}
+async function viewDepartments() {
+    const [rows] = await connection.execute('SELECT * FROM department');
+    console.table(rows)
+    menuOptions();
 }
 
 
@@ -60,7 +63,31 @@ async function viewEmployees() {
 
 
 
-
+async function addRole() {
+    const newRole = await inquirer.prompt([
+        {
+            type: "input",
+            message: "New Role Title:",
+            name: "title"
+        },
+        {
+            type: "list",
+            message: "New Role Salary:",
+            name: "salary",
+            choices: ['80', '100', '120', '150', '160']
+        },
+        {
+            type: "list",
+            message: "Enter Department:",
+            name: "department_id",
+            choices: ["Sales", "Engineering", "Finance", "Legal"]
+        }
+    ])
+    console.log(newRole);
+    const [newRoleData] = await connection.query('INSERT INTO role SET ?', newRole);
+    console.table(newRoleData)
+    menuOptions();
+};
 
 async function addDepartment() {
     const newDepartment = await inquirer.prompt([
@@ -71,7 +98,7 @@ async function addDepartment() {
         }
     ])
     console.log(newDepartment);
-    const [rows] = await connection.query('INSERT INTO department SET ?', newDepartment);
-    console.table(rows)
+    const [newDepartmentData] = await connection.query('INSERT INTO department SET ?', newDepartment);
+    console.table(newDepartmentData)
     menuOptions();
-}
+};
