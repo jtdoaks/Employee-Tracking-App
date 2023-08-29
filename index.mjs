@@ -23,7 +23,7 @@ async function menuOptions() {
         viewEmployees()
     }
     else if (answers.decision === 'Add Employee') {
-        
+        addEmployee()
     }
     else if (answers.decision === 'View All Roles') {
         viewRoles()
@@ -58,10 +58,46 @@ async function viewDepartments() {
 }
 
 
+async function addEmployee() {
+    const newEmployee = await inquirer.prompt([
+        {
+            type: "input",
+            message: "Employee First Name:",
+            name: "first_name"
+        },
+        {
+            type: "input",
+            message: "Employee Last Name:",
+            name: "last_name"
+        },
+        {
+            type: "list",
+            message: "Choose Employee Role:",
+            name: "role_id",
+            choices: [1, 2, 3, 4, 5, 6, 7, 8],
+        },
+        {
+            type: "list",
+            message: "Choose Manager id:",
+            name: "manager_id",
+            choices: [1, 3, 5, 7],
+        }
+
+    ])
+    console.log(newEmployee);
+    const [newEmployeeData] = await connection.query('INSERT INTO employee SET ?', newEmployee);
+    console.table(newEmployeeData)
+    menuOptions();
+};
 
 
 
-
+// const departmentMapping = {
+//     'Sales': 1,
+//     'Engineering': 2,
+//     'Finance': 3,
+//     'Legal': 4
+// }; Object.keys(departmentMapping)
 
 async function addRole() {
     const newRole = await inquirer.prompt([
@@ -80,14 +116,17 @@ async function addRole() {
             type: "list",
             message: "Enter Department:",
             name: "department_id",
-            choices: ["Sales", "Engineering", "Finance", "Legal"]
+            choices: [1, 2, 3, 4],
         }
     ])
+
+    const newRoleData = await connection.query('INSERT INTO role SET ?', newRole);
     console.log(newRole);
-    const [newRoleData] = await connection.query('INSERT INTO role SET ?', newRole);
     console.table(newRoleData)
     menuOptions();
-};
+
+
+}
 
 async function addDepartment() {
     const newDepartment = await inquirer.prompt([
