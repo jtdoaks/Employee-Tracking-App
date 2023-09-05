@@ -12,7 +12,7 @@ async function menuOptions() {
                 type: 'list',
                 message: 'What would you like to do?',
                 name: 'decision',
-                choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department']
+                choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit']
             }
         ])
     console.log(answers)
@@ -38,6 +38,9 @@ async function menuOptions() {
     else if (answers.decision === 'Add Department') {
         addDepartment();
     }
+    else if (answers.decision === 'Quit') {
+        connection.end();
+    }
 
 }
 
@@ -47,7 +50,7 @@ async function viewEmployees() {
     menuOptions();
 }
 async function viewRoles() {
-    const [rows] = await connection.execute('SELECT * FROM role');
+    const [rows] = await connection.execute('SELECT role.id, role.title, role.salary, department.department_name FROM role JOIN department on role.department_id = department.id');
     console.table(rows)
     menuOptions();
 }
